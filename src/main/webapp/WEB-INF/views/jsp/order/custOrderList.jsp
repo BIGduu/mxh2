@@ -36,7 +36,12 @@
 				<div class="form-group">
 					<div style="line-height: 25px;display: inline-block;padding-left:15px;" id="receivingAddressTitle">工地：</div>
 			    	<div style="width: 65%;display: inline-block;">
-			    		<input class="form-control" style="height:28px;width: 87%;" type="text" id="receivingAddress" name="receivingAddress" value=${receivingAddress }>
+						<select id="receivingAddress" name="receivingAddress">
+							<c:forEach items="${buildingList}" var="building">
+								<option value="${building.buildingName}">${building.buildingName}</option>
+							</c:forEach>
+						</select>
+			    		<%--<input class="form-control" style="height:28px;width: 87%;" type="text" id="receivingAddress" name="receivingAddress" value=${receivingAddress }>--%>
 					</div>
 		    	</div>
 			</div>

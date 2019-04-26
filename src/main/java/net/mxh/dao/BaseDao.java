@@ -88,8 +88,9 @@ public class BaseDao<T> extends HibernateDaoSupport {
 		Criteria criteria = currentSession().createCriteria(entityClass);
 		for (String key : param.keySet()) {
 			Object value = param.get(key);
-			if (null != value)
+			if (null != value) {
 				criteria.add(Restrictions.eq(key, value));
+			}
 		}
 		if (isAsc) {
 			criteria.addOrder(Order.asc(orderColumn));

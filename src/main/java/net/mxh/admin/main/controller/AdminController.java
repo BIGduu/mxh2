@@ -39,7 +39,7 @@ public class AdminController {
 	private StoresService storesService;
 	
 	/**
-	 * 查询所有的用户
+	 * 查询所有的后台用户
 	 * @param request
 	 * @param page
 	 * @return

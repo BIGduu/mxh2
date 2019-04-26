@@ -44,36 +44,42 @@ public class BuildingController {
 	/**
 	 * 工地列表
 	 *
-	 * @param page
+	 *
 	 * @return
 	 */
 	@RequestMapping(value = "/buildingList", method = RequestMethod.POST)
 	public ModelAndView buildingList(@RequestParam Map<String, Object> param , HttpSession session) {
+
 		Integer page = StringUtil.toInteger(param.get("page"));
+		Admin admin = (Admin) session.getAttribute("admin");
 		List<Building> buildingList;
-		if(param.get("receivingAddress")==""&&param.get("managerName")==""){
+		long total;
+		if(admin.getRoleId()<4){
 			buildingList = buildingService.findAll(page, pageSize);
+			total = buildingService.count();
+			total = (total / pageSize == 0) ? (1) : (total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
 		}else{
 			if(param.get("receivingAddress")!=""){
 				param.put("buildingName",param.get("receivingAddress"));
-
 			}
 			if(param.get("managerName")==""){
 				param.remove("managerName");
 			}
 
+			param.put("storesId", admin.getStoresId());
+
 			param.remove("receivingAddress");
 
 			param.remove("page");
 			buildingList = buildingService.findByParam(param,"createTime",false);
+			total = 1;
 		}
 
 		for (Building building : buildingList) {
 			building.setCreateTimeStr(DateUtil.getDateTimeFormat(new Date(building.getCreateTime())));
 		}
 
-		long total = buildingService.count();
-		total = (total / pageSize == 0) ? (1) : (total % pageSize == 0 ? total / pageSize : total / pageSize + 1);
+
 		ModelAndView modelAndView = new ModelAndView("/building/buildingList");
 		modelAndView.addObject("buildingList", buildingList);
 		modelAndView.addObject("page", page);
@@ -117,6 +123,7 @@ public class BuildingController {
 		}
 		User user = userService.findById(building.getManagerId());
 		building.setManagerName(user.getUsername());
+		building.setStoresId(user.getStoresId());
 		if (null == building.getId() || 0 == building.getId()) {
 			building.setId(null);
 			building.setCreateTime(System.currentTimeMillis());

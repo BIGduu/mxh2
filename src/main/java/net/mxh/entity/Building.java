@@ -48,6 +48,17 @@ public class Building {
 	
 	@Column(name = "start_time")
 	private Long startTime;
+
+	@Column(name = "stores_id")
+	private Long storesId;
+
+	public Long getStoresId() {
+		return this.storesId;
+	}
+
+	public void setStoresId(Long storesId) {
+		this.storesId = storesId;
+	}
 	
 	public Long getArea() {
 		return area;

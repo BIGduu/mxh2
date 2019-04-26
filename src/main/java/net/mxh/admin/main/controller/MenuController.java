@@ -56,8 +56,6 @@ public class MenuController {
      * @QQ 776273900
      */
     private void reCasheMenu(HttpServletRequest request) {
-
-
         ///////////////////////////////////
         //此处用于admin重建菜单缓存
         Admin admin = (Admin) request.getSession().getAttribute("admin");

@@ -338,6 +338,7 @@
         </table>
 
         <jsp:include page="../main/tablePage.jsp"></jsp:include>
+        <div>test</div>
 
     </div>
     <div style="display:none">

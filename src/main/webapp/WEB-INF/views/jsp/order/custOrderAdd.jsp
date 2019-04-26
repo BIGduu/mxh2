@@ -32,8 +32,15 @@
 			<div class="form-group">
 				<div style="line-height: 25px;display: inline-block;padding-left:15px;" >项目经理:</div>
 				<div style="width: 65%;display: inline-block;">
-					<input class="form-control" style="height:28px;width: 87%;" type="text" id="managerName" name="managerName" value="">
-					<input type="hidden" id="managerId" name="managerId" value= "" />
+                    <select id="managerId" name="managerId"
+                            onchange="getBuildingList()">
+                        <option>请选择</option>
+                        <c:forEach items="${userList}" var="user">
+                            <option value="${user.id}">${user.username}</option>
+                        </c:forEach>
+                    </select>
+					<%--<input class="form-control" style="height:28px;width: 87%;" type="text" id="managerName" name="managerName" value="">--%>
+					<%--<input type="hidden" id="managerId" name="managerId" value= "" />--%>
 				</div>
 			</div>
 		</div>
@@ -43,7 +50,13 @@
 			<div class="form-group">
 				<div style="line-height: 25px;display: inline-block;padding-left:15px;" >收货地址:</div>
 				<div style="width: 65%;display: inline-block;">
-					<input class="form-control" style="height:28px;width: 87%;" type="text" id="receivingAddress" name="receivingAddress" value="">
+                    <select id="receivingAddress" name="receivingAddress">
+                        <option>请选择</option>
+                        <%--<c:forEach items="${buildingList}" var="building">--%>
+                            <%--<option value="${building.buildingName}">${building.buildingName}</option>--%>
+                        <%--</c:forEach>--%>
+                    </select>
+					<%--<input class="form-control" style="height:28px;width: 87%;" type="text" id="receivingAddress" name="receivingAddress" value="">--%>
 				</div>
 			</div>
 		</div>
@@ -120,6 +133,31 @@
 </div>
 
 <script type="text/javascript">
+    var buildingIdArray = new Array();
+    var buildingNameArray = new Array();
+    var buildingManagerIdArray = new Array();
+
+    $(function () {
+        <c:forEach items="${buildingList}" var="building">
+            buildingIdArray.push(${building.id});
+            buildingNameArray.push("${building.buildingName}");
+            buildingManagerIdArray.push(${building.managerId});
+        </c:forEach>
+    });
+
+    function getBuildingList() {
+        $("#receivingAddress option").remove();
+        $("#receivingAddress").prepend("<option type='hidden'>请选择</option>");//添加第一个option值
+        var managerId = $("#managerId").val();
+        for (i = 0; i < buildingNameArray.length; i++) {
+            console.log(buildingManagerIdArray[i],managerId);
+            if (buildingManagerIdArray[i]==managerId) {
+                $("#receivingAddress").append("<option value='" + buildingNameArray[i] + "'>" + buildingNameArray[i] + "</option>");
+            }
+        }
+    }
+
+
 function goList(page)
 {
 	goMenu("/admin/order/custOrderList", page);

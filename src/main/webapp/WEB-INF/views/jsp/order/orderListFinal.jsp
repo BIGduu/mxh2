@@ -8,7 +8,7 @@
     <div class="row items-push">
         <div class="col-sm-7">
             <h1 class="page-heading">
-                <small><a onclick="goMain()">首页</a>已完成订单列表</small>
+                <small><a onclick="goMain()">首页</a> /已完成订单列表</small>
             </h1>
         </div>
     </div>
@@ -288,6 +288,10 @@
         </tbody>
     </table>
     <jsp:include page="../main/tablePage.jsp"></jsp:include>
+    <div>
+        <input id="gotonumber" type="text" value="${page}">
+        <button onclick="myGoList()" >前往</button>
+    </div>
 </div>
 <div style="display:none">
     <form id="exportForm" name="exportForm" action="" method="post" target="exportIframe">
@@ -300,6 +304,13 @@
     //覆盖goList方法，分页自动调用该方法
     function goList(page) {
         goMenu("/admin/order/orderListFinal", page, $("#searchForm").serialize());
+    }
+
+    function myGoList() {
+        var page = $("#gotonumber").val();
+        var number = Number(page);
+        goMenu("/admin/order/orderListFinal", number, $("#searchForm").serialize());
+
     }
 
     function exportExcel() {

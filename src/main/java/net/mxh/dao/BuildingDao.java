@@ -17,4 +17,11 @@ public class BuildingDao extends BaseDao<Building> {
 		criteria.add(Restrictions.eq("managerId", managerId));
 		return criteria.list();
 	}
+
+	public List<Building> findByStoresId(Long storesId) {
+		Criteria criteria = currentSession().createCriteria(Building.class);
+		criteria.add(Restrictions.eq("storesId",storesId));
+		return criteria.list();
+	}
+
 }

@@ -60,4 +60,10 @@ public class BuildingService {
 	public List<Building> findByManagerId(Long managerId) {
 		return buildingDao.findByManagerId(managerId);
 	}
+
+	public List<Building> findByStoresId(Long storesId) {
+		return buildingDao.findByStoresId(storesId);
+	}
+
+
 }

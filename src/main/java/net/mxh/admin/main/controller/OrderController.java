@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.mxh.entity.*;
+import net.mxh.service.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,23 +36,6 @@ import com.alibaba.fastjson.JSONObject;
 import net.mxh.admin.main.bean.CommonSearch;
 import net.mxh.admin.main.bean.CommonSelect;
 import net.mxh.admin.main.bean.UserCheckbox;
-import net.mxh.entity.Admin;
-import net.mxh.entity.DeliveryOrder;
-import net.mxh.entity.Img;
-import net.mxh.entity.Merchandise;
-import net.mxh.entity.OrderInfo;
-import net.mxh.entity.Stores;
-import net.mxh.entity.TheOrder;
-import net.mxh.entity.UpstairsDetail;
-import net.mxh.entity.User;
-import net.mxh.service.DeliveryOrderService;
-import net.mxh.service.ImgService;
-import net.mxh.service.MerchandiseService;
-import net.mxh.service.OrderInfoService;
-import net.mxh.service.OrderService;
-import net.mxh.service.StoresService;
-import net.mxh.service.UpstairsDetailService;
-import net.mxh.service.UserService;
 import net.mxh.util.CategoryUtil;
 import net.mxh.util.DateUtil;
 import net.mxh.util.ExportFinalBoolExcel;
@@ -92,6 +77,9 @@ public class OrderController {
 
     @Autowired
     private ImgService imgService;
+
+    @Autowired
+    private BuildingService buildingService;
 
     private static List<CommonSelect> selectList = new ArrayList<>();
 
@@ -587,7 +575,7 @@ public class OrderController {
     }
 
     /**
-     * 客户财务对账订单
+     * 财务对账订单
      * @param request
      * @param page
      * @return
@@ -646,7 +634,7 @@ public class OrderController {
     }
 
     /**
-     * 客户材料部对账订单
+     * 材料部对账订单
      * @param request
      * @param page
      * @return
@@ -765,6 +753,7 @@ public class OrderController {
     }
 
     /**
+     *订单编辑（暂未开通）
      * @param page
      * @param orderId
      * @return
@@ -782,6 +771,7 @@ public class OrderController {
     }
 
     /**
+     * 订单保存（暂未开通）
      * @param order
      * @return
      */
@@ -1036,7 +1026,7 @@ public class OrderController {
     }
 
     /**
-     * @param orderId
+     * @param deliveryOrderId
      * @return
      * @description 图片查询
      * @author ZhongHan
@@ -1428,6 +1418,14 @@ public class OrderController {
         for (User user : users) {
             searchs.add(new CommonSearch(user.getId() , user.getUsername()));
         }
+        //添加工地下拉列表
+        List<Building> buildingList = null;
+        if (admin.getRoleId()<4){
+            buildingList = buildingService.findAll();
+        }else{
+            buildingList = buildingService.findByStoresId(admin.getStoresId());
+        }
+
 
         ModelAndView modelAndView = new ModelAndView("/order/custOrderList");
         modelAndView.addObject("orderList" , orderList);
@@ -1435,6 +1433,7 @@ public class OrderController {
         modelAndView.addObject("page" , page);
         modelAndView.addObject("total" , total);
         modelAndView.addObject("checkState" , admin.getCheckList());
+        modelAndView.addObject("buildingList",buildingList);
 
         Map<String, String> map = new HashMap<>();
         if (!param.isEmpty()) {
@@ -1465,15 +1464,32 @@ public class OrderController {
         for (Merchandise merchandise : merchandiseList) {
             merchandise.setImg(ImageUploadUtil.getRealUrl(merchandise.getImg()));
         }
+
+        //添加工地下拉列表
+        List<Building> buildingList = null;
+        if (admin.getRoleId()<4){
+            buildingList = buildingService.findAll();
+        }else{
+            buildingList = buildingService.findByStoresId(admin.getStoresId());
+        }
+
+        List<User> userList = null;
+        //凑活一下 查找全部的本门店的项目经理 不想修改DAO了
+        userList = userService.findByStoresId(admin.getStoresId(),1,Integer.MAX_VALUE);
+
+
         ModelAndView modelAndView = new ModelAndView("/order/custOrderAdd");
         modelAndView.addObject("merchandiseList" , merchandiseList);
         modelAndView.addObject("users" , searchs);
         modelAndView.addObject("stateList" , selectList);
         modelAndView.addObject("checkState" , admin.getCheckList());
+        modelAndView.addObject("buildingList",buildingList);
+        modelAndView.addObject("userList",userList);
         if (null != admin.getStoresId()) {
             modelAndView.addObject("storesId" , admin.getStoresId().toString());
             modelAndView.addObject("storesName" , admin.getStoresName());
         }
+
         return modelAndView;
     }
 

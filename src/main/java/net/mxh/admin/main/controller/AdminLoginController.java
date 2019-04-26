@@ -66,13 +66,12 @@ public class AdminLoginController {
 	@ResponseBody
 	public JsonResultData login(HttpServletRequest request, String adminName, String password) {
 		JsonResultData result = JsonResultData.success();
+		//password = "b5bf2e1f36a5715355a1ee252892edbe6";
 		Admin admin = adminService.findByAdminName(adminName);
 		if (admin == null) {
 			return result.turnError("用户不存在");
 		}
 		if (!password.trim().equals(admin.getPassword())) {
-			System.out.println("收到的密码" + password.trim());
-			System.out.println("原来的密码" + admin.getPassword());
 			return result.turnError("密码错误");
 		}
 		request.getSession().removeAttribute("checkcode");
